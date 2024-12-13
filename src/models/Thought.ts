@@ -4,7 +4,7 @@ import mongoose, { Schema, model, type Document } from 'mongoose';
 interface IThought extends Document {
     thoughtText: string;
     createdAt: Date;
-    username: Schema.Types.ObjectId[];
+    username: string
     reactions: Schema.Types.ObjectId[];
 
 }
@@ -30,11 +30,10 @@ const reactionSchema = new Schema<IReaction>({
         type: String,
         required: true
     },
-    // createdAt: {
-    //     type: Date,
-    //     default: () => new Date(),
-    //     get: (timestamp: Date) => dateFormat(new Date(timestamp), 'MM/dd/yyyy')
-    // }
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    }
 },
     {
         toJSON: {
@@ -52,15 +51,14 @@ const thoughtSchema = new Schema<IThought>({
         minlength: 1,
         maxlength: 280
     },
-    // createdAt: {
-    //     type: Date,
-    //     default: () => new Date(),
-    //     get: (timestamp: Date) => dateFormat(timestamp, 'MM/dd/yyyy')
-    // },
-    // username: {
-    //     type: String,
-    //     required: true
-    // },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    username: {
+        type: String,
+        required: true
+    },
     reactions: [reactionSchema]
 },
     {
@@ -73,7 +71,12 @@ const thoughtSchema = new Schema<IThought>({
     }
 );
 
-thoughtSchema.virtual('reactionCount').get(function (this: IThought) {
+thoughtSchema.virtual('date').get(function (this: any) {
+    return this.createdAt.toDateString();
+}
+);
+
+reactionSchema.virtual('reactionCount').get(function (this: any) {
     return this.reactions.length;
 }
 );

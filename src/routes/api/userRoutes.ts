@@ -5,4 +5,6 @@ import { createUser, getUsers, getSingleUser } from '../../controllers/userContr
 router.route('/').get(getUsers).post(createUser);
 router.route('/:userId').get(getSingleUser);
 
+
+
 export default router;
