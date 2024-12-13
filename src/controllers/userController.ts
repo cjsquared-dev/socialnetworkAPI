@@ -52,7 +52,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 }   
 
-// the deleteUser function deletes a user by their ID
+// the deleteUser function deletes a user by their ID and their associated thoughts
 export const deleteUser = async (req: Request, res: Response) => {
     try {
         const user = await User.findOneAndDelete({ _id: req.params.userId });
