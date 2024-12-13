@@ -16,7 +16,7 @@ export const getSingleUser = async (req: Request, res: Response) => {
         const user = await User.findOne({ _id: req.params.userId });
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            res.status(404).json({ message: 'User not found' });
         } else {
             res.json(user);
         }
