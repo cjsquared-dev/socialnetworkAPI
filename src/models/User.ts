@@ -38,7 +38,8 @@ const userSchema = new Schema<IUser>({
         toJSON: {
             virtuals: true,
         },
-        timestamps: true
+        id: false
+
     }
 );
 

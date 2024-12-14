@@ -68,3 +68,42 @@ export const deleteUser = async (req: Request, res: Response) => {
         return;
     }
 }
+
+// the addFriend function adds a new friend to a user's friend list
+
+export const addFriend = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $addToSet: { friends: req.params.friendId } },
+            { new: true }
+        );
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(user);
+        return;
+    } catch (err) {
+        res.status(500).json(err);
+        return;
+    }
+}
+
+// the deleteFriend function removes a friend from a user's friend list
+export const deleteFriend = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $pull: { friends: req.params.friendId } },
+            { new: true }
+        );
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(user);
+        return;
+    } catch (err) {
+        res.status(500).json(err);
+        return;
+    }
+}

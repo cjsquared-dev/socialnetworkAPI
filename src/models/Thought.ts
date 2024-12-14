@@ -5,7 +5,7 @@ interface IThought extends Document {
     thoughtText: string;
     createdAt: Date;
     username: string
-    reactions: Schema.Types.ObjectId[];
+    reactions: IReaction[];
 
 }
 
@@ -76,7 +76,7 @@ thoughtSchema.virtual('date').get(function (this: any) {
 }
 );
 
-reactionSchema.virtual('reactionCount').get(function (this: any) {
+thoughtSchema.virtual('reactionCount').get(function (this: IThought) {
     return this.reactions.length;
 }
 );

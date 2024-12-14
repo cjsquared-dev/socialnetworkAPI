@@ -1,5 +1,5 @@
 import Thought from '../models/Thought.js';
-import User from '../models/User.js';
+//import User from '../models/User.js';
 import { Request, Response } from 'express';
 
 //the getThoughts function retrieves all thoughts from the database
@@ -29,26 +29,14 @@ export const getSingleThought = async (req: Request, res: Response) => {
 
 // the createThought function creates a new thought
 export const createThought = async (req: Request, res: Response) => {
-  try {
-    const { thoughtText, username, userId } = req.body;
-    const newThought = await Thought.create({ thoughtText, username });
-
-    // add thought to user's thought array field
-    const user = await User.findByIdAndUpdate(
-        userId,
-        { $push: { thoughts: newThought._id } },
-        { new: true }
-    );
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
-    res.json(newThought);
-    return;
+    try {
+        const thought = await Thought.create(req.body);
+        res.json(thought);
     } catch (err) {
         res.status(500).json(err);
-        return;
     }
-  }
+}
+
 
 // the updateThought function updates a thought by its ID
 export const updateThought = async (req: Request, res: Response) => {
@@ -71,6 +59,46 @@ export const updateThought = async (req: Request, res: Response) => {
 export const deleteThought = async (req: Request, res: Response) => {
     try {
         const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
+        if (!thought) {
+            return res.status(404).json({ message: 'Thought not found' });
+        }
+        res.json(thought);
+        return;
+    } catch (err) {
+        res.status(500).json(err);
+        return;
+    }
+}
+
+
+// the addReaction function adds a reaction to a thought's reaction array field
+
+export const addReaction = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $push: { reactions: req.body } },
+            { new: true }
+        );
+        if (!thought) {
+            return res.status(404).json({ message: 'Thought not found' });
+        }
+        res.json(thought);
+        return;
+    }   catch (err) {
+        res.status(500).json(err);
+        return;
+    }
+}
+
+// the deleteReaction function deletes a reaction from a thought's reaction array field
+export const deleteReaction = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
+            { new: true }
+        );
         if (!thought) {
             return res.status(404).json({ message: 'Thought not found' });
         }
