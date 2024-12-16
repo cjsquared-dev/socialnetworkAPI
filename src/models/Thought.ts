@@ -1,5 +1,4 @@
 import mongoose, { Schema, model, type Document } from 'mongoose';
-// import dateFormat from '../utils/dateFormat';
 
 interface IThought extends Document {
     thoughtText: string;
